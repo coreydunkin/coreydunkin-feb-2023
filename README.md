@@ -5,12 +5,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+docker-compose up
+docker exec -it app sh
+yarn install
 ```
+
+- It's recommended to install/use [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows) (Windows) to manage/switch your node versions.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
