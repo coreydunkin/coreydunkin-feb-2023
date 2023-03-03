@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { createContentfulClient } from '../../contentClient';
-import { ACCESSTOKEN, SPACEID } from "@/utils/utils";
+import * as process from "process";
 
 type Data = {
     id: number;
@@ -9,28 +9,42 @@ type Data = {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-    const client = createContentfulClient(SPACEID, ACCESSTOKEN);
+    try {
+        const client = createContentfulClient(process.env.NEXT_PUBLIC_SPACE_ID, process.env.NEXT_PUBLIC_ACCESS_TOKEN);
 
-    const response = await client.getEntries({ content_type: 'coreydunkin' });
-    const data: Data[] = response.items.map((item: any) => ({
-        id: item.sys.id,
-        title: item.fields.title,
-        body: item.fields.body,
-    }));
+        const response = await client.getEntries({ content_type: 'coreydunkin' });
+        const data: Data[] = response.items.map((item: any) => ({
+            id: item.sys.id,
+            title: item.fields.title,
+            body: item.fields.body,
+        }));
 
-    return {
-        props: {
-            data,
-        },
-    };
+        return {
+            props: {
+                data: {
+                    items: data,
+                    error: null
+                },
+            },
+        };
+    } catch (error: any) {
+        console.error(error); // log the error for debugging purposes
+        return {
+            props: {
+                data: {
+                    items: [],
+                    error: error.message
+                },
+            },
+        };
+    }
 };
-
 const Home = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     return (
         <div>
             <h1>Contentful data:</h1>
             <ul>
-                {data.map((item: Data) => (
+                {data.items.map((item: Data) => (
                     <li key={item.id}>
                         <h2>{item.title}</h2>
                         <p>{item.body}</p>
