@@ -28,7 +28,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
             },
         };
     } catch (error: any) {
-        console.error(error); // log the error for debugging purposes
         return {
             props: {
                 data: {
@@ -44,7 +43,7 @@ const Home = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) 
         <div>
             <h1>Contentful data:</h1>
             <ul>
-                {data.items.map((item: Data) => (
+                {!data.error && data.items.map((item: Data) => (
                     <li key={item.id}>
                         <h2>{item.title}</h2>
                         <p>{item.body}</p>
