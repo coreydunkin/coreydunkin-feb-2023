@@ -5,7 +5,20 @@ type Page = {
     id: string;
     slug: string;
     title: string;
-    content: string;
+    content: {
+        data: any;
+        content: Array<{
+            data: any;
+            content: Array<{
+                data: any;
+                marks: any[];
+                value: string;
+                nodeType: string;
+            }>;
+            nodeType: string;
+        }>;
+        nodeType: string;
+    };
 };
 
 type PageProps = {
@@ -14,9 +27,7 @@ type PageProps = {
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const client = createContentfulClient(process.env.NEXT_PUBLIC_SPACE_ID, process.env.NEXT_PUBLIC_ACCESS_TOKEN);
-
     const pages = await client.getEntries({ content_type: 'page' });
-
     const paths = pages.items.map((page: any) => ({ params: { slug: page.fields.slug } }));
 
     return {
@@ -44,12 +55,13 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
         },
     };
 };
-
 const Page = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {
+    const content = page.content.content[0].content[0].value ?? '';
+
     return (
         <div>
             <h1>{page.title}</h1>
-            <div dangerouslySetInnerHTML={{ __html: page.content }} />
+            <div dangerouslySetInnerHTML={{ __html: content }} />
         </div>
     );
 };

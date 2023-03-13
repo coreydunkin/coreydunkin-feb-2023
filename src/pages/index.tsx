@@ -1,6 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { createContentfulClient } from '../../contentClient';
 import * as process from "process";
+import {ACCESS_TOKEN, SPACE_ID} from "@/utils/utils";
 
 type Data = {
     id: number;
@@ -10,7 +11,7 @@ type Data = {
 
 export const getServerSideProps: GetServerSideProps = async () => {
     try {
-        const client = createContentfulClient(process.env.NEXT_PUBLIC_SPACE_ID, process.env.NEXT_PUBLIC_ACCESS_TOKEN);
+        const client = createContentfulClient(SPACE_ID, ACCESS_TOKEN);
 
         const response = await client.getEntries({ content_type: 'coreydunkin' });
         const data: Data[] = response.items.map((item: any) => ({
